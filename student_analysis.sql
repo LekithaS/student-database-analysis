@@ -5,7 +5,6 @@
 -- DATA: Fictional sample student records
 -- ============================================
 
-
 -- QUERY 1: Display all students
 SELECT *
 FROM students;
@@ -59,7 +58,7 @@ INNER JOIN courses AS c
     ON s.student_id = c.student_id;
 
 
--- EXTRA QUERY: Count students in each department
+-- EXTRA QUERY 1: Count students in each department
 SELECT
     department,
     COUNT(*) AS total_students
@@ -68,9 +67,52 @@ GROUP BY department
 ORDER BY total_students DESC;
 
 
--- EXTRA QUERY: Find the lowest marks in each department
+-- EXTRA QUERY 2: Find the lowest marks in each department
 SELECT
     department,
     MIN(marks) AS lowest_marks
 FROM students
 GROUP BY department;
+
+
+-- QUERY 10: Categorize students based on marks
+SELECT
+    name,
+    department,
+    marks,
+    CASE
+        WHEN marks >= 85 THEN 'Excellent'
+        WHEN marks >= 70 THEN 'Good'
+        WHEN marks >= 50 THEN 'Average'
+        ELSE 'Needs Improvement'
+    END AS performance_category
+FROM students
+ORDER BY marks DESC;
+
+
+-- QUERY 11: Find students scoring above the overall average
+SELECT
+    name,
+    department,
+    marks
+FROM students
+WHERE marks > (
+    SELECT AVG(marks)
+    FROM students
+)
+ORDER BY marks DESC;
+
+
+-- QUERY 12: Find the highest-scoring student(s) in each department
+SELECT
+    s.name,
+    s.department,
+    s.marks
+FROM students AS s
+WHERE s.marks = (
+    SELECT MAX(s2.marks)
+    FROM students AS s2
+    WHERE s2.department = s.department
+)
+ORDER BY s.department;
+
